@@ -1,58 +1,21 @@
 import { validateBoard, isAdjacent } from './utils.js';
 import { createShapeCanvas, updateScoreDisplay, updateTaskDisplay, showNotification } from './ui.js';
+import { initLogger } from './logger.js';
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    initLogger(); // инициализация логгера
+    console.log('DOM fully loaded, initializing game...');
+    if (!isGameInitialized) {
+        initGame();
+    } else {
+        console.log('Game already initialized, skipping...');
+    }
+}, { once: true });
 
         // Global flag to prevent multiple initializations
         let isGameInitialized = false;
         let isTaskProcessing = false;
-
-        // Global error handler
-        window.onerror = function (msg, url, lineNo, columnNo, error) {
-            const errorMessage = `Uncaught error: ${msg} at ${url}:${lineNo}:${columnNo}\nStack: ${error?.stack || 'N/A'}`;
-            const logContainer = document.getElementById('log-container');
-            if (logContainer) {
-                logContainer.innerHTML += `<span style="color: #ff0000">${errorMessage}</span>\n`;
-            }
-            console.error(errorMessage);
-            return false;
-        };
-
-        // Console log override for colored logs
-        (function() {
-            const logContainer = document.getElementById('log-container');
-            if (!logContainer) {
-                console.error('Log container not found');
-                return;
-            }
-            const originalConsoleLog = console.log;
-            const originalConsoleError = console.error;
-            console.log = function(...args) {
-                originalConsoleLog.apply(console, args);
-                const logMessage = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' ');
-                const isBonusLog = /horizontal_arrow|vertical_arrow|bonus_star/.test(logMessage);
-                const colorClass = isBonusLog ? 'bonus-log' : 'default-log';
-                logContainer.innerHTML += `<span class="${colorClass}">${logMessage}</span>\n`;
-                logContainer.scrollTop = logContainer.scrollHeight;
-            };
-            console.error = function(...args) {
-                originalConsoleError.apply(console, args);
-                const logMessage = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' ');
-                const isBonusLog = /horizontal_arrow|vertical_arrow|bonus_star/.test(logMessage);
-                const colorClass = isBonusLog ? 'bonus-log' : 'default-log';
-                logContainer.innerHTML += `<span class="${colorClass}">ERROR: ${logMessage}</span>\n`;
-                logContainer.scrollTop = logContainer.scrollHeight;
-            };
-        })();
-
-        // Game initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded, initializing game...');
-            if (!isGameInitialized) {
-                initGame();
-            } else {
-                console.log('Game already initialized, skipping...');
-            }
-        }, { once: true });
 
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
