@@ -1,3 +1,4 @@
+import state from './state.js';
 import { validateBoard, isAdjacent } from './utils.js';
 import { createShapeCanvas, updateScoreDisplay, updateTaskDisplay, showNotification } from './ui.js';
 import { initLogger } from './logger.js';
@@ -13,48 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }, { once: true });
 
-        // Global flag to prevent multiple initializations
-        let isGameInitialized = false;
-        let isTaskProcessing = false;
-
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
         const taskDescription = document.getElementById('task-description');
         const scoreValue = document.getElementById('score-value');
-
-        const GRID_WIDTH = 6;
-        const GRID_HEIGHT = 6;
-        const ALL_SHAPES = ['square', 'circle', 'triangle'];
-        const ALL_COLORS = ['#ff5555', '#55ff55', '#5555ff'];
-        const selectedShapes = ALL_SHAPES;
-        const selectedColors = ALL_COLORS;
-
-        let TILE_SIZE = 50;
-        let board = [];
-        let selectedTile = null;
-        let isProcessing = false;
-        let score = 0;
-        let taskScore = 0;
-        let task = { shape: 'square', count: 10 };
-        let collectedShapes = { square: 0 };
-        let movesLeft = 15;
-        let shapeCanvases = {};
-        let animations = [];
-        let currentTaskIndex = 0;
-
-        const predefinedTasks = [
-            { shape: 'square', count: 10, moves: 3 },
-            { shape: 'circle', count: 12, moves: 3 },
-            { shape: 'triangle', count: 8, moves: 2 },
-            { shape: 'square', count: 15, moves: 3 },
-            { shape: 'circle', count: 10, moves: 2 },
-            { shape: 'triangle', count: 14, moves: 3 },
-            { shape: 'square', count: 12, moves: 4 },
-            { shape: 'circle', count: 16, moves: 3 },
-            { shape: 'triangle', count: 10, moves: 2 },
-            { shape: 'square', count: 18, moves: 3 }
-        ];
-
 
 
         function adjustCanvasSize() {
